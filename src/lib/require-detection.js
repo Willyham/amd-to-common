@@ -57,7 +57,7 @@ var getDependencyMap = function(node){
  */
 var getArrayDependencies = function(node){
   return _.map(node.expression.arguments[0].elements, function(element){
-    return element.raw;
+    return element.value;
   });
 };
 
