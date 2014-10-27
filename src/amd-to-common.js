@@ -3,9 +3,8 @@
 var fs = require('fs');
 var _ = require('underscore');
 var esprima = require('esprima');
-var escodegen = require('escodegen');
 var traverse = require('traverse');
-var requireNodes = require('./lib/require-nodes');
+var requireDetection = require('./lib/require-detection');
 
 var AMDToCommon = (function(){
 
@@ -36,15 +35,17 @@ var AMDToCommon = (function(){
    * @param {String} content The source content
    */
   _convert.prototype.analyseContent = function(content){
-    var code = esprima.parse(content, {loc: true});
+    var code = esprima.parse(content, {
+      loc: true,
+      range: true,
+      comment: true
+    });
     traverse(code).forEach(function(node){
-      debugger;
-      if(!requireNodes.isAMDStyle(node)){
+      if(!requireDetection.isAMDStyle(node)){
         return;
       }
       console.log('Found AMD style module definition');
-      var dependencyMap = requireNodes.getDependencyMap(node);
-      console.log(dependencyMap);
+      var dependencyMap = requireDetection.getDependencyMap(node);
     });
   };
 
