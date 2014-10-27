@@ -1,0 +1,23 @@
+{
+  "name": "amd-to-common",
+  "version": "0.0.0",
+  "description": "Convert AMD style requires to CommonJS style",
+  "main": "arc/amd-to-common.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "amd-to-common": "bin/amd-to-common"
+  },
+  "author": "Will Demaine",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "esprima": "~1.2.2",
+    "escodegen": "~1.4.1",
+    "underscore": "~1.7.0",
+    "minimist": "~1.1.0",
+    "glob-all": "~3.0.1",
+    "traverse": "~0.6.6"
+  }
+}
