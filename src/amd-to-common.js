@@ -28,16 +28,24 @@ var AMDToCommon = (function(){
     _.each(this.files, _.bind(function(filename){
       var content = fs.readFileSync(filename, 'utf-8');
       console.log('Analysing file ' + filename);
-      this.analyseContent(content);
+      var newContent = this.convertToCommon(content);
+      if(newContent === content){
+        console.log('Nothing to do.');
+        return;
+      }
+      console.log('Converting file to commonJS style require');
+      fs.writeFileSync(filename, newContent);
     }, this));
   };
 
   /**
    * Given the contents of a JS source file, parse the source
-   * with esprima, then traverse the AST
+   * with esprima, then traverse the AST. Convert to common and
+   * and output the new source.
    * @param {String} content The source content
+   * @returns {String} The converted source, or the same source if nothing changed.
    */
-  _convert.prototype.analyseContent = function(content){
+  _convert.prototype.convertToCommon = function(content){
     var code = esprima.parse(content, { range: true, comment: true });
     // Filter the nodes to find all AMD style defines
     var amdNodes = traverse(code).reduce(function(memo, node){
@@ -57,8 +65,7 @@ var AMDToCommon = (function(){
 
     // Do a second pass of the code now that we've rewritten it
     var secondPassNode = esprima.parse(withRequire, { range: true, comment: true });
-    var withExports = exportConverter(withRequire, secondPassNode);
-    console.log(withExports);
+    return exportConverter(withRequire, secondPassNode);
   };
 
   return _convert;
