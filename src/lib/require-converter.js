@@ -35,15 +35,14 @@ var makeRequireStatement = function(name, identifier){
  * @returns {string}
  */
 var addImportStatements = function(content, amdNode){
-  var defineStart = amdNode.node.range[0];
   var defineEnd = amdNode.node.range[1];
   var functionNode = amdNode.getFunctionNode();
   var functionBlockStart = functionNode.body.range[0] + 1;
-  var requireStatements = _.reduce(amdNode.getDependencyMap(), function(memo, identifier, name){
+  var requireStatements = _.reduce(amdNode.getDependencyMap(), function(memo, name, identifier){
     return memo += makeRequireStatement(name, identifier);
   }, '\n');
 
-  var defineStatement = content.substring(defineStart, functionBlockStart);
+  var defineStatement = content.substring(0, functionBlockStart);
   var block = content.substring(functionBlockStart, defineEnd);
   return defineStatement + requireStatements + block;
 };
