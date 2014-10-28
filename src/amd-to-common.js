@@ -59,7 +59,7 @@ var AMDToCommon = (function(){
     // For now, let's operate with a 1 per file assumption.
     var amdNode = _.first(amdNodes);
     if(!amdNode){
-      return;
+      return content;
     }
     var withRequire = requireConverter(content, amdNode);
 
