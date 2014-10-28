@@ -3,7 +3,7 @@ var _ = require('underscore');
 var esprima = require('esprima');
 var fs = require('fs');
 
-var requireDetection = require('../../src/lib/require-detection');
+var requireDetection = require('../../src/lib/AMDNode');
 
 var _parse = _.partial(esprima.parse, _, {
   loc: true,

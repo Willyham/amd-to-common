@@ -4,7 +4,9 @@ var fs = require('fs');
 var _ = require('underscore');
 var esprima = require('esprima');
 var traverse = require('traverse');
-var requireDetection = require('./lib/require-detection');
+
+var AMDNode = require('./lib/AMDNode');
+var requireConverter = require('./lib/require-converter');
 
 var AMDToCommon = (function(){
 
@@ -40,13 +42,22 @@ var AMDToCommon = (function(){
       range: true,
       comment: true
     });
-    traverse(code).forEach(function(node){
-      if(!requireDetection.isAMDStyle(node)){
-        return;
+    // Filter the nodes to find all AMD style defines
+    var amdNodes = traverse(code).reduce(function(memo, node){
+      var amdNode = new AMDNode(node);
+      if(amdNode.isAMDStyle()){
+        memo.push(amdNode);
       }
-      console.log('Found AMD style module definition');
-      var dependencyMap = requireDetection.getDependencyMap(node);
-    });
+      return memo;
+    }, []);
+
+    // For now, let's operate with a 1 per file assumption.
+    var amdNode = _.first(amdNodes);
+    if(!amdNode){
+      return;
+    }
+    var newContent = requireConverter(content, amdNode);
+    console.log(newContent);
   };
 
   return _convert;

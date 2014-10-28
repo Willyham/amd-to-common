@@ -1,11 +1,21 @@
 var _ = require('underscore');
 
 /**
+ *
+ * @param node
+ * @constructor
+ */
+var AMDNode = function(node){
+  this.node = node;
+};
+
+/**
  * Determine whether a node represents a requireJS 'define' call.
  * @param {Object} node AST node
  * @returns {Boolean} true if define call, false otherwise
  */
-var isDefine = function(node){
+AMDNode.prototype.isDefine = function(){
+  var node = this.node;
   if(!node || !node.type || node.type !== 'ExpressionStatement'){
     return false;
   }
@@ -24,11 +34,11 @@ var isDefine = function(node){
  * @param {Object} node AST Node
  * @returns {boolean} true if AMD style, false otherwise
  */
-var isAMDStyle = function(node){
-  if(!isDefine(node)){
+AMDNode.prototype.isAMDStyle = function(){
+  if(!this.isDefine()){
     return false;
   }
-  var defineArguments = node.expression.arguments;
+  var defineArguments = this.node.expression.arguments;
   if(defineArguments[0].type !== 'ArrayExpression'){
     return false;
   }
@@ -44,9 +54,9 @@ var isAMDStyle = function(node){
  * @param {Object} node AST Node
  * @returns {Object} An object map of dependencies
  */
-var getDependencyMap = function(node){
-  var arrayDependencies = getArrayDependencies(node);
-  var dependencyIdentifiers = getDependencyIdentifiers(node);
+AMDNode.prototype.getDependencyMap = function(){
+  var arrayDependencies = this.getArrayDependencies();
+  var dependencyIdentifiers = this.getDependencyIdentifiers();
   return _.object(_.zip(arrayDependencies, dependencyIdentifiers));
 };
 
@@ -55,10 +65,18 @@ var getDependencyMap = function(node){
  * @param {Object} node AST Node
  * @returns {String[]} A list of dependency strings
  */
-var getArrayDependencies = function(node){
-  return _.map(node.expression.arguments[0].elements, function(element){
+AMDNode.prototype.getArrayDependencies = function(){
+  return _.map(this.node.expression.arguments[0].elements, function(element){
     return element.value;
   });
+};
+
+AMDNode.prototype.getArrayNode = function(){
+  return this.node.expression.arguments[0];
+};
+
+AMDNode.prototype.getFunctionNode = function(){
+  return this.node.expression.arguments[1];
 };
 
 /**
@@ -66,14 +84,10 @@ var getArrayDependencies = function(node){
  * @param {Object} node AST Node
  * @returns {String[]} A list of dependency strings
  */
-var getDependencyIdentifiers = function(node){
-  return _.map(node.expression.arguments[1].params, function(param){
+AMDNode.prototype.getDependencyIdentifiers = function(){
+  return _.map(this.node.expression.arguments[1].params, function(param){
     return param.name;
   });
 };
 
-module.exports = {
-  isDefine: isDefine,
-  isAMDStyle: isAMDStyle,
-  getDependencyMap: getDependencyMap
-};
+module.exports = AMDNode;
