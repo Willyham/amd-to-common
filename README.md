@@ -10,6 +10,8 @@ Install
 Usage:
 
     amd-to-common [file/directory/glob] [--exclude=]
+    
+Important: This /will/ rewrite your files. Please make sure they are checked in to some kind of source control before running amd-to-common.
 
 # What does it do?
 
@@ -49,3 +51,10 @@ There are a few advantages to using this syntax. It removes the unweildy array a
 
 [browserify-ftw](https://github.com/thlorenz/browserify-ftw) is an awesome project which aims to convert your project to browserify in basically one shot. Sometimes, especially for large webapps, this isn't ideal. On a large project, we wanted a half-way house so that we could write in CommonJS style whilst still preparing to move to browserify.
 
+## How does it work?
+
+amd-to-common uses [esprima](http://esprima.org/) to parse your JS files into an AST. It then analyses the content of the file, and does some really gnarly string replacements in order to rewrite to CommonJS style. Ideally, it would modify the AST and use something like `escodegen` to rewrite the source, but as most projects have very different spacing styles, this would probably anger a lot of people.
+
+### Is it safe?
+
+Most likely, but I'm sure there are some edge cases. If it makes you feel better, I've used this to convert a pretty complex (~200 module) web app with ~~very few~~ no problems.
