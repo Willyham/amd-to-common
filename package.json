@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "tape": "~3.0.1",
-    "tap-prettify": "0.0.2"
+    "tap-prettify": "0.0.2",
+    "eslint": "~0.9.1"
   }
 }

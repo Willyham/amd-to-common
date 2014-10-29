@@ -1,20 +1,6 @@
 var _ = require('underscore');
 
 /**
- * Convert to commonJS style imports
- * Add the import statements first so that we don't mess up the ranges.
- * This works because changing the function definition all happens on
- * the code before the imports.
- * @param content
- * @param amdNode
- * @returns {string}
- */
-module.exports = function convert(content, amdNode){
-  var withImports = addImportStatements(content, amdNode);
-  return addRequireStatement(withImports, amdNode);
-};
-
-/**
  * Make the require statements.
  * TOOD: Add support for different tab spacing/quote styles
  * @param {String} name The package name
@@ -39,7 +25,8 @@ var addImportStatements = function(content, amdNode){
   var functionNode = amdNode.getFunctionNode();
   var functionBlockStart = functionNode.body.range[0] + 1;
   var requireStatements = _.reduce(amdNode.getDependencyMap(), function(memo, name, identifier){
-    return memo += makeRequireStatement(name, identifier);
+    memo = memo + makeRequireStatement(name, identifier);
+    return memo;
   }, '\n');
 
   var defineStatement = content.substring(0, functionBlockStart);
@@ -63,9 +50,22 @@ var addRequireStatement = function(content, amdNode){
   var defineStart = amdNode.node.range[0];
 
   var defineString = content.substring(defineStart, argumentsStart);
-  var newDefine = "function(require, exports, module)";
+  var newDefine = 'function(require, exports, module)';
 
   var blockContent = content.substring(functionBlockStart, content.length);
   return defineString + newDefine + blockContent;
 };
 
+/**
+ * Convert to commonJS style imports
+ * Add the import statements first so that we don't mess up the ranges.
+ * This works because changing the function definition all happens on
+ * the code before the imports.
+ * @param content
+ * @param amdNode
+ * @returns {string}
+ */
+module.exports = function convert(content, amdNode){
+  var withImports = addImportStatements(content, amdNode);
+  return addRequireStatement(withImports, amdNode);
+};

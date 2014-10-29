@@ -1,5 +1,3 @@
-'use strict';
-
 var fs = require('fs');
 var _ = require('underscore');
 var esprima = require('esprima');
@@ -10,6 +8,7 @@ var requireConverter = require('./lib/require-converter');
 var exportConverter = require('./lib/export-converter');
 
 var AMDToCommon = (function(){
+  'use strict';
 
   /**
    * Constructor function for the Human library
@@ -57,11 +56,11 @@ var AMDToCommon = (function(){
     }, []);
 
     // For now, let's operate with a 1 per file assumption.
-    var amdNode = _.first(amdNodes);
-    if(!amdNode){
+    var validNode = _.first(amdNodes);
+    if(!validNode){
       return content;
     }
-    var withRequire = requireConverter(content, amdNode);
+    var withRequire = requireConverter(content, validNode);
 
     // Do a second pass of the code now that we've rewritten it
     var secondPassNode = esprima.parse(withRequire, { range: true, comment: true });

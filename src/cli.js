@@ -7,10 +7,6 @@ var path = require('path');
 var fs = require('fs');
 var AMDToCommon = require('./amd-to-common');
 
-var directory = _.first(args._) || './';
-var allJSFiles = getFileGlobString(directory);
-var excludedPattern = '!' + args.exclude;
-
 function getFileGlobString(arg){
   var stat = fs.lstatSync(arg);
   if(stat.isDirectory()){
@@ -19,6 +15,9 @@ function getFileGlobString(arg){
   return arg;
 }
 
+var directory = _.first(args._) || './';
+var allJSFiles = getFileGlobString(directory);
+var excludedPattern = '!' + args.exclude;
 
 glob([allJSFiles, excludedPattern], {}, function(error, files){
   var converter = new AMDToCommon({
