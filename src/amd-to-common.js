@@ -6,6 +6,7 @@ var traverse = require('traverse');
 var AMDNode = require('./lib/AMDNode');
 var requireConverter = require('./lib/require-converter');
 var exportConverter = require('./lib/export-converter');
+var strictConverter = require('./lib/strict-converter');
 
 var AMDToCommon = (function(){
   'use strict';
@@ -18,6 +19,7 @@ var AMDToCommon = (function(){
   var _convert = function(options){
     options = options || {};
     this.files = options.files;
+    this.parseOptions = { range: true, comment: true };
   };
 
   /**
@@ -45,7 +47,7 @@ var AMDToCommon = (function(){
    * @returns {String} The converted source, or the same source if nothing changed.
    */
   _convert.prototype.convertToCommon = function(content){
-    var code = esprima.parse(content, { range: true, comment: true });
+    var code = esprima.parse(content, this.parseOptions);
     // Filter the nodes to find all AMD style defines
     var amdNodes = traverse(code).reduce(function(memo, node){
       var amdNode = new AMDNode(node);
@@ -60,11 +62,15 @@ var AMDToCommon = (function(){
     if(!validNode){
       return content;
     }
+
     var withRequire = requireConverter(content, validNode);
 
     // Do a second pass of the code now that we've rewritten it
-    var secondPassNode = esprima.parse(withRequire, { range: true, comment: true });
-    return exportConverter(withRequire, secondPassNode);
+    var secondPassNode = esprima.parse(withRequire, this.parseOptions);
+    var withExport = exportConverter(withRequire, secondPassNode);
+
+    var thirdPassNode = esprima.parse(withExport, this.parseOptions);
+    return strictConverter(withExport, thirdPassNode);
   };
 
   return _convert;
