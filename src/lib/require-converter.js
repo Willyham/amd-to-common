@@ -9,9 +9,9 @@ var _ = require('underscore');
  */
 var makeRequireStatement = function(name, identifier){
   if(name){
-    return '  var ' + name + ' = require(\'' + identifier + '\');\n';
+    return 'var ' + name + ' = require(\'' + identifier + '\');';
   }
-  return 'require(\'' + identifier + '\');\n';
+  return 'require(\'' + identifier + '\');';
 };
 
 /**
@@ -25,9 +25,9 @@ var addImportStatements = function(content, amdNode){
   var functionNode = amdNode.getFunctionNode();
   var functionBlockStart = functionNode.body.range[0] + 1;
   var requireStatements = _.reduce(amdNode.getDependencyMap(), function(memo, name, identifier){
-    memo = memo + makeRequireStatement(name, identifier);
+    memo = memo + '\n  ' + makeRequireStatement(name, identifier);
     return memo;
-  }, '\n');
+  }, '');
 
   var defineStatement = content.substring(0, functionBlockStart);
   var block = content.substring(functionBlockStart, defineEnd);
