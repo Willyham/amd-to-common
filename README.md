@@ -1,4 +1,4 @@
-amd-to-common [![Travis branch](https://img.shields.io/travis/Willyham/amd-to-common.svg)]() [![Coverage Status](https://coveralls.io/repos/Willyham/amd-to-common/badge.svg)](https://coveralls.io/r/Willyham/amd-to-common)
+amd-to-common
 =============
 
 Convert requireJS AMD style defines to requireJS commonJS style defines.
