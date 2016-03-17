@@ -1,6 +1,6 @@
 {
   "name": "amd-to-common",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Convert AMD style requires to CommonJS style",
   "main": "arc/amd-to-common.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "Will Demaine",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "esprima": "~1.2.2",
+    "esprima": "^2.5.0",
     "escodegen": "~1.4.1",
     "underscore": "~1.7.0",
     "minimist": "~1.1.0",
