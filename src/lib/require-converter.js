@@ -44,7 +44,6 @@ var addImportStatements = function(content, amdNode){
  * @returns {string} The converted source.
  */
 var addRequireStatement = function(content, amdNode){
-
   var argumentsStart = amdNode.getArrayNode().range[0];
   var amdNodeStart = amdNode.node.range[0]
   var beforeRequire = content.substring(0, amdNodeStart);
