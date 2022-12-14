@@ -45,6 +45,8 @@ var addImportStatements = function(content, amdNode){
  */
 var addRequireStatement = function(content, amdNode){
   var argumentsStart = amdNode.getArrayNode().range[0];
+  var amdNodeStart = amdNode.node.range[0]
+  var beforeRequire = content.substring(0, amdNodeStart);
   var functionNode = amdNode.getFunctionNode();
   var functionBlockStart = functionNode.body.range[0];
   var defineStart = amdNode.node.range[0];
@@ -53,7 +55,7 @@ var addRequireStatement = function(content, amdNode){
   var newDefine = 'function(require, exports, module)';
 
   var blockContent = content.substring(functionBlockStart, content.length);
-  return defineString + newDefine + blockContent;
+  return beforeRequire + defineString + newDefine + blockContent;
 };
 
 /**
